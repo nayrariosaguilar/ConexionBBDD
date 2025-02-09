@@ -8,7 +8,7 @@ def connect():
                                       host="127.0.0.1",
                                       port="5432",
                                       dbname="training")
-        return connection.cursor()
+        return connection
 
     except (Exception,Error) as error:
         print("Error while connecting to PostgreSQL", error)

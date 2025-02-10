@@ -1,3 +1,4 @@
+#Clase POJO para simular un pedido
 class Pedido:
     def __init__(self, num_pedido, fecha_pedido, clie, rep, fab, producto, cant, importe):
         self.num_pedido = num_pedido

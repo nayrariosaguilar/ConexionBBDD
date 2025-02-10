@@ -31,6 +31,7 @@ class ProductoDAO:
         except (Exception, psycopg2.DatabaseError) as error:
             print(error)
 
+    #Selecciona un producto por su id
     def findById(self, id_producto):
         sql = """SELECT * FROM productos WHERE id_producto = %s;"""
         try:

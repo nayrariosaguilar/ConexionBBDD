@@ -10,5 +10,6 @@ class ProductoController:
 
     def updateStock(self, producto, cantidad):
         self.producto_dao.updateStock(producto.id_producto, cantidad)
+
     def findById(self, id_producto):
         return self.producto_dao.findById(id_producto)

@@ -19,9 +19,22 @@ def generar_factura(pedidoC, cesta):
     if not cesta:
         print("La cistella està buida.")
         return
-
+    total = 0
     for pedidoUser in cesta:
-        pedidoC.crearPedido(pedidoUser)
+        print("Factura generada.")
+        print("Datos del emisor:")
+        print("Número de pedido: ", pedidoUser.num_pedido)
+        print("Fecha del pedido: ", pedidoUser.fecha_pedido)
+        print("Cliente: ", pedidoUser.clie)
+        print("Representante: ", pedidoUser.rep)
+        print("Fabricante: ", pedidoUser.fab)
+        print("Producto: ", pedidoUser.producto)
+        print("Cantidad: ", pedidoUser.cant)
+        print("Importe: ", pedidoUser.importe)
+        total = pedidoUser.importe+pedidoUser.importe
+
+    print("Total: ", total)
+
     opcion = input("Borrar cesta opción 1 o seguir comprando opción 2: ")
 
     if opcion == '1':
@@ -51,7 +64,9 @@ def main():
                 print("El producto no existe, introduce uno válido")
                 continue
             id_pedido = pedidoC.selectLastId()+1
+
             try:
+
                 cantidad = int(input("Introduce la cantidad: "))
                 numPedido = id_pedido
                 fecha_pedido = datetime.today().strftime('%Y-%m-%d')
@@ -63,9 +78,15 @@ def main():
                 print("Introduce un valor válido.")
                 continue
 
+            #Primero creamos un pedidos con los datos proporcionados
             pedido = Pedido(numPedido, fecha_pedido, clie, rep, fab, id_producto, cantidad, importe)
+            pedidoC.crearPedido(pedido)
+            #Segundo paso IMPORTANTE actualizar las existencias
+            pedidoC.updateStockPedido(pedido)
+            #Por ultimo añadirlo a la cesta para luego mostrarlo
             cistella.append(pedido)
             print("Producte afegit a la cistella.")
+
         elif opcion == '2':
             mostrar_cistella(cistella)
         elif opcion == '3':

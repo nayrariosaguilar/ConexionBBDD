@@ -10,6 +10,8 @@ class PedidoController:
 #Metodo para crear pedidos a partir de los productos seleccionados por el usuario
     def crearPedido(self, pedido):
         self.pedido_dao.insert(pedido)
+
+    def updateStockPedido(self, pedido):
         self.producto_dao.updateStock(pedido.producto, pedido.cant)
 
 #Metodo para eliminar pedidos, cuando hayamos realizado la factura

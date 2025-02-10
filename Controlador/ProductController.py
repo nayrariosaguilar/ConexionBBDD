@@ -1,12 +1,14 @@
-# Controller/ProductoController.py
 from  Model.DAOProduct import ProductoDAO
 
+#AÑADIMOS CONTROLES A LAS OPERACIONES DE PRODUCTOS
 class ProductoController:
     def __init__(self):
         self.producto_dao = ProductoDAO()
 
-    def obtener_productos_con_existencias(self):
-        return self.producto_dao.select_all()
+    def selectProductosConStock(self):
+        return self.producto_dao.selectAll()
 
-    def actualizar_existencias(self, id_producto, cantidad):
-        self.producto_dao.update_existencias(id_producto, cantidad)
+    def updateStock(self, producto, cantidad):
+        self.producto_dao.updateStock(producto.id_producto, cantidad)
+    def findById(self, id_producto):
+        return self.producto_dao.findById(id_producto)

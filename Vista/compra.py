@@ -1,10 +1,10 @@
-# main.py
+from datetime import datetime
 from Controlador.ProductController import ProductoController
 from Controlador.pedidoController import PedidoController
 from Model.pedido import Pedido
 
-def mostrar_productos(producto_controller):
-    productos = producto_controller.obtener_productos_con_existencias()
+def mostrar_productos(productoC):
+    productos = productoC.selectProductosConStock()
     for producto in productos:
         print(producto)
 
@@ -15,27 +15,24 @@ def mostrar_cistella(cistella):
         for item in cistella:
             print(item)
 
-
-def generar_factura(pedido_controller, cistella):
-    if not cistella:
+def generar_factura(pedidoC, cesta):
+    if not cesta:
         print("La cistella està buida.")
         return
 
-    for pedido in cistella:
-        pedido_controller.crear_pedido(pedido)
+    for pedidoUser in cesta:
+        pedidoC.crearPedido(pedidoUser)
+    opcion = input("Borrar cesta opción 1 o seguir comprando opción 2: ")
 
-    print("Factura generada.")
-    opcion = input("Vols esborrar la cistella (1) o seguir comprant (2)? ")
     if opcion == '1':
-        cistella.clear()
+        cesta.clear()
         print("Cistella esborrada.")
     elif opcion == '2':
         print("Continua comprant.")
 
-
 def main():
-    producto_controller = ProductoController()
-    pedido_controller = PedidoController()
+    productoC = ProductoController()
+    pedidoC = PedidoController()
     cistella = []
 
     while True:
@@ -47,24 +44,37 @@ def main():
         opcion = input("Selecciona una opció: ")
 
         if opcion == '1':
-            mostrar_productos(producto_controller)
-            id_producto = input("Introdueix l'ID del producte que vols comprar: ")
-            cantidad = int(input("Introdueix la quantitat: "))
-            # Aquí pots afegir la lògica per obtenir els detalls del producte i crear un objecte Pedido
-            # Suposant que tens un producte amb id_producto i una quantitat
-            pedido = Pedido(1, '2023-10-10', 1, 1, 'FAB1', id_producto, cantidad, 1000)
+            mostrar_productos(productoC)
+            id_producto = input("Introduce el id del producto: ")
+            producto = productoC.findById(id_producto)
+            if producto is None:
+                print("El producto no existe, introduce uno válido")
+                continue
+            id_pedido = pedidoC.selectLastId()+1
+            try:
+                cantidad = int(input("Introduce la cantidad: "))
+                numPedido = id_pedido
+                fecha_pedido = datetime.today().strftime('%Y-%m-%d')
+                clie = int(input("Introduce el número de cliente: "))
+                rep = int(input("Introduce el número de representante: "))
+                fab = producto.id_fab
+                importe = producto.precio * cantidad
+            except ValueError:
+                print("Introduce un valor válido.")
+                continue
+
+            pedido = Pedido(numPedido, fecha_pedido, clie, rep, fab, id_producto, cantidad, importe)
             cistella.append(pedido)
             print("Producte afegit a la cistella.")
         elif opcion == '2':
             mostrar_cistella(cistella)
         elif opcion == '3':
-            generar_factura(pedido_controller, cistella)
+            generar_factura(pedidoC, cistella)
         elif opcion == '4':
-            print("Sortint...")
+            print("GRACIAS POR VISITAR NUESTRA TIENDA")
             break
         else:
-            print("Opció no vàlida. Si us plau, selecciona una opció vàlida.")
-
+            print("OPCIÓ INCORRECTA")
 
 if __name__ == '__main__':
     main()

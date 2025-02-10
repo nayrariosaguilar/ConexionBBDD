@@ -5,3 +5,6 @@ class Producto:
         self.descripcion = descripcion
         self.precio = precio
         self.existencias = existencias
+
+    def __str__(self):
+        return f"ID: {self.id_producto}, Descripción: {self.descripcion}, Precio: {self.precio}, Existencias: {self.existencias}, ID Fabricante: {self.id_fab}"

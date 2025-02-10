@@ -19,17 +19,23 @@ def generar_factura(pedidoC, cesta):
     if not cesta:
         print("La cistella està buida.")
         return
+
     total = 0
+    print("Factura generada.")
     for pedidoUser in cesta:
-        print("Factura generada.")
         print("Datos del emisor:")
-        print("Número de pedido: ", pedidoUser.num_pedido)
-        print("Fecha del pedido: ", pedidoUser.fecha_pedido)
         print("Cliente: ", pedidoUser.clie)
         print("Representante: ", pedidoUser.rep)
-        print("Fabricante: ", pedidoUser.fab)
+
+        print("Datos del receptor:")
+        print("Número de pedido: ", pedidoUser.num_pedido)
+
+        print("Datos del pedido:")
+        print("Fecha del pedido: ", pedidoUser.fecha_pedido)
         print("Producto: ", pedidoUser.producto)
         print("Cantidad: ", pedidoUser.cant)
+
+
         print("Importe: ", pedidoUser.importe)
         total = pedidoUser.importe+pedidoUser.importe
 

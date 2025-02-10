@@ -35,7 +35,6 @@ def generar_factura(pedidoC, cesta):
         print("Producto: ", pedidoUser.producto)
         print("Cantidad: ", pedidoUser.cant)
 
-
         print("Importe: ", pedidoUser.importe)
         total = pedidoUser.importe+pedidoUser.importe
 
@@ -72,7 +71,6 @@ def main():
             id_pedido = pedidoC.selectLastId()+1
 
             try:
-
                 cantidad = int(input("Introduce la cantidad: "))
                 numPedido = id_pedido
                 fecha_pedido = datetime.today().strftime('%Y-%m-%d')
@@ -83,7 +81,6 @@ def main():
             except ValueError:
                 print("Introduce un valor válido.")
                 continue
-
             #Primero creamos un pedidos con los datos proporcionados
             pedido = Pedido(numPedido, fecha_pedido, clie, rep, fab, id_producto, cantidad, importe)
             pedidoC.crearPedido(pedido)
@@ -101,7 +98,7 @@ def main():
             print("GRACIAS POR VISITAR NUESTRA TIENDA")
             break
         else:
-            print("OPCIÓ INCORRECTA")
+            print("opción no válida")
 
 if __name__ == '__main__':
     main()

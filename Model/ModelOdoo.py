@@ -1,105 +1,35 @@
-class DatabaseAdapter:
-    def __init__(self, connection):
-        self.connection = connection
+class EmployeeModel:
+    def __init__(self, db_adapter):
+        self.db = db_adapter
 
-    def execute_query(self, query, params=None):
+    def get_absence_data(self):
+        query = """
+            SELECT e.nom, e.mail, d.nom AS departament, a.dies_validar, a.tipus, a.descripcio
+            FROM hr_employee e
+            JOIN hr_department d ON e.id_departament = d.id
+            JOIN hr_leave a ON e.id = a.id_empleat
         """
-        Método general para ejecutar consultas
-        """
-        try:
-            cursor = self.connection.cursor()
-            cursor.execute(query, params)
+        result = self.db.execute_query(query)
+        return result if result is not None else []
 
-            # Detectar el tipo de consulta
-            query_type = query.strip().upper().split()[0]
+    def get_absences_by_department(self, department, status):
+        query = """
+            SELECT e.nom, e.mail, a.dies_validar, a.data_inici, a.data_fi, a.descripcio
+            FROM hr_employee e
+            JOIN hr_department d ON e.id_departament = d.id
+            JOIN hr_leave a ON e.id = a.id
+            WHERE d.nom = %s AND a.estat = %s
+        """
+        result = self.db.execute_query(query, (department, status))
+        return result if result is not None else []
 
-            if query_type == "SELECT":
-                return self.fetch_all(cursor)
-            elif query_type in ["INSERT", "UPDATE", "DELETE"]:
-                self.connection.commit()
-                return cursor.rowcount
-            else:
-                self.connection.commit()
-                return True
-        except Exception as e:
-            print(f"Error al ejecutar la consulta: {e}")
-            return None
-
-    def fetch_all(self, cursor):
+    def get_absences_over_5_days(self):
+        query = """
+            SELECT e.nom, d.nom AS departament
+            FROM empleats e
+            JOIN departaments d ON e.id_departament = d.id
+            JOIN absencies a ON e.id = a.id_empleat
+            WHERE a.dies_validar > 5
         """
-        Obtiene todos los resultados de una consulta SELECT
-        """
-        try:
-            return cursor.fetchall()
-        except Exception as e:
-            print(f"Error al obtener resultados: {e}")
-            return []
-
-    def fetch_one(self, cursor):
-        """
-        Obtiene un solo resultado
-        """
-        try:
-            return cursor.fetchone()
-        except Exception as e:
-            print(f"Error al obtener resultado: {e}")
-            return None
-
-    def execute_select(self, query, params=None):
-        """
-        Ejecuta una consulta SELECT y devuelve los resultados
-        """
-        try:
-            cursor = self.connection.cursor()
-            cursor.execute(query, params)
-            return self.fetch_all(cursor)
-        except Exception as e:
-            print(f"Error al ejecutar SELECT: {e}")
-            return []
-
-    def execute_update(self, query, params=None):
-        """
-        Ejecuta una actualización y devuelve el número de filas afectadas
-        """
-        try:
-            cursor = self.connection.cursor()
-            cursor.execute(query, params)
-            self.connection.commit()
-            return cursor.rowcount
-        except Exception as e:
-            print(f"Error al ejecutar UPDATE: {e}")
-            self.connection.rollback()
-            return 0
-
-    def execute_insert(self, query, params=None):
-        """
-        Ejecuta una inserción y devuelve el ID insertado si está disponible
-        """
-        try:
-            cursor = self.connection.cursor()
-            cursor.execute(query, params)
-            self.connection.commit()
-
-            # Intentar obtener el ID insertado (específico para PostgreSQL)
-            try:
-                return cursor.fetchone()[0]  # Para consultas con RETURNING id
-            except:
-                return cursor.rowcount  # Si no hay RETURNING, devolver filas afectadas
-        except Exception as e:
-            print(f"Error al ejecutar INSERT: {e}")
-            self.connection.rollback()
-            return None
-
-    def execute_delete(self, query, params=None):
-        """
-        Ejecuta una eliminación y devuelve el número de filas eliminadas
-        """
-        try:
-            cursor = self.connection.cursor()
-            cursor.execute(query, params)
-            self.connection.commit()
-            return cursor.rowcount
-        except Exception as e:
-            print(f"Error al ejecutar DELETE: {e}")
-            self.connection.rollback()
-            return 0
+        result = self.db.execute_query(query)
+        return result if result is not None else []

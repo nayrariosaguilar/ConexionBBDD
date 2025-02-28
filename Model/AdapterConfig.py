@@ -1,49 +1,44 @@
 import psycopg2
 
 
+import psycopg2
+
 class DatabaseAdapter:
-    def __init__(self, connection):
+    def __init__(self, host='192.168.56.101', dbname='stickerdb', user='postgres', password='1234'):
         """
-        Inicializa el adaptador de base de datos con una conexión existente
-
-        :param connection: Objeto de conexión de psycopg2
-        """
-        self.connection = connection
-
-    @classmethod
-    def connect(cls, host='localhost', dbname='prova_empresa', user='postgres', password='postgres'):
-        """
-        Método de clase para establecer una nueva conexión a la base de datos
+        Inicializa el adaptador de base de datos con los parámetros de conexión
 
         :param host: Dirección del servidor de base de datos
         :param dbname: Nombre de la base de datos
         :param user: Nombre de usuario
         :param password: Contraseña de usuario
-        :return: Instancia de DatabaseAdapter
+        """
+        self.connection_params = {
+            'host': host,
+            'dbname': dbname,
+            'user': user,
+            'password': password
+        }
+        self.connection = None
+
+    def connect(self):
+        """
+        Establece una nueva conexión a la base de datos
+
+        :return: True si la conexión se establece correctamente, False en caso contrario
         """
         try:
-            connection = psycopg2.connect(
-                f"host='{host}' dbname='{dbname}' user='{user}' password='{password}'"
-            )
+            self.connection = psycopg2.connect(**self.connection_params)
             print("Connexió establerta correctament")
-            return cls(connection)
+            return True
         except psycopg2.Error as e:
             print(f"Error en establir la connexió: {e}")
-            return None
+            return False
 
     def execute_query(self, query, params=None):
-        """
-        Método general para ejecutar consultas
-
-        :param query: Consulta SQL a ejecutar
-        :param params: Parámetros para la consulta (opcional)
-        :return: Resultados de la consulta
-        """
         try:
             cursor = self.connection.cursor()
             cursor.execute(query, params)
-
-            # Detectar el tipo de consulta
             query_type = query.strip().upper().split()[0]
 
             if query_type == "SELECT":
